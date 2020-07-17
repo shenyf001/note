@@ -532,25 +532,25 @@ SpringBoot pom文件中引入 MyBatis Generator
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
         <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin" />
 
-        <jdbcConnection driverClass="org.h2.Driver"
-                        connectionURL="jdbc:h2:mem:testdb"
-                        userId="sa"
-                        password="">
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://*.*.*.*:5000/shenyf001"
+                        userId="root"
+                        password="******">
         </jdbcConnection>
 
-        <javaModelGenerator targetPackage="geektime.spring.data.mybatis.model.generate"
+        <javaModelGenerator targetPackage="geektime.spring.data.mybatisdemo.model"
                             targetProject="./src/main/java">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="geektime.spring.data.mybatis.mapper.generate"
+        <sqlMapGenerator targetPackage="geektime.spring.data.mybatisdemo.mapper"
                          targetProject="./src/main/resources/mapper">
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
         <javaClientGenerator type="MIXEDMAPPER"
-                             targetPackage="geektime.spring.data.mybatis.mapper.generate"
+                             targetPackage="geektime.spring.data.mybatisdemo.mapper"
                              targetProject="./src/main/java">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
@@ -558,7 +558,7 @@ SpringBoot pom文件中引入 MyBatis Generator
         <table tableName="t_coffee" domainObjectName="Coffee" >
             <generatedKey column="id" sqlStatement="CALL IDENTITY()" identity="true" />
             <columnOverride column="price" javaType="org.joda.money.Money" jdbcType="BIGINT"
-                            typeHandler="geektime.spring.data.mybatis.handler.MoneyTypeHandler"/>
+                            typeHandler="geektime.spring.data.mybatisdemo.handler.MoneyTypeHandler"/>
         </table>
     </context>
 </generatorConfiguration>
@@ -566,7 +566,7 @@ SpringBoot pom文件中引入 MyBatis Generator
 
 `注意`：plugin 是有顺序的，不能颠倒，另外建议生成代码的路径不要覆盖程序中的代码，可以建一个专门存储生成代码的文件夹，之后手动合并到业务代码中。
 
-启动generator方法：
+启动 generator 方法：
 
 ```java
 private void generateArtifacts() throws Exception {
@@ -578,4 +578,32 @@ private void generateArtifacts() throws Exception {
     MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
     myBatisGenerator.generate(null);
   }
+```
+
+## **PageHelper**
+
+在 pom.xml 中添加如下依赖：
+
+```xml
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper</artifactId>
+    <version>最新版本</version>
+</dependency>
+```
+
+经常用到官方文档中的第四种方法，来查询分页。
+
+```java
+//第四种，参数方法调用
+//存在以下 Mapper 接口方法，你不需要在 xml 处理后两个参数
+public interface CountryMapper {
+    List<Country> selectByPageNumSize(
+            @Param("user") User user,
+            @Param("pageNum") int pageNum,
+            @Param("pageSize") int pageSize);
+}
+//配置supportMethodsArguments=true
+//在代码中直接调用：
+List<Country> list = countryMapper.selectByPageNumSize(user, 1, 10);
 ```
