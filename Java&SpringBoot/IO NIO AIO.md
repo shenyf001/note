@@ -48,11 +48,64 @@ if (!dir.exists()) {
 }
 ```
 
+### okhttp下载文件
 
+``` java
+    OkHttpClient okHttpClient = new OkHttpClient(); // 创建OkHttpClient对象
+    /**
+     * 下载文件
+     *
+     * @param url 文件地址
+     * @return 文件
+     */
+    public File DownloadFile(String url) throws IOException {
+        Request request = new Request.Builder().url(url).build(); // 创建一个请求
+        Response response = okHttpClient.newCall(request).execute(); // 返回实体
+        String destFileDir = "downloads";
+        InputStream is = null;
+        byte[] buf = new byte[2048];
+        int len = 0;
+        FileOutputStream fos = null;
+        //储存下载文件的目录
+        File dir = new File(destFileDir);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File(dir, getHeaderFileName(response));
+        try {
+            is = response.body().byteStream();
+            fos = new FileOutputStream(file);
+            while ((len = is.read(buf)) != -1) {
+                fos.write(buf, 0, len);
+            }
+            fos.flush();
+        } catch (Exception e) {
+            log.error("文件下载失败", e);
+        } finally {
+            try {
+                if (is != null) is.close();
+                if (fos != null) fos.close();
+            } catch (IOException e) {
+                log.error("下载关闭失败", e);
+            }
+        }
+        return file;
+    }
 
-
-
-
-
-
-
+    private String getHeaderFileName(Response response) throws UnsupportedEncodingException {
+        String dispositionHeader = response.header("Content-Disposition");
+        if (!TextUtils.isEmpty(dispositionHeader)) {
+            dispositionHeader.replace("attachment;filename=", "");
+            dispositionHeader.replace("filename*=utf-8", "");
+            String[] strings = dispositionHeader.split("; ");
+            if (strings.length > 1) {
+                dispositionHeader = strings[1].replace("filename=", "");
+                dispositionHeader = dispositionHeader.replace("\"", "");
+                dispositionHeader = URLDecoder.decode(dispositionHeader, "utf-8");
+                return dispositionHeader;
+            }
+            return "";
+        }
+        return "";
+    }
+```

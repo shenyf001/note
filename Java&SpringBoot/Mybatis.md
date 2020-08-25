@@ -586,24 +586,36 @@ private void generateArtifacts() throws Exception {
 
 ```xml
 <dependency>
-    <groupId>com.github.pagehelper</groupId>
-    <artifactId>pagehelper</artifactId>
-    <version>最新版本</version>
+     <groupId>com.github.pagehelper</groupId>
+     <artifactId>pagehelper-spring-boot-starter</artifactId>
+     <version>1.3.0</version>
 </dependency>
 ```
 
-经常用到官方文档中的第四种方法，来查询分页。
+一般用法
 
-```java
-//第四种，参数方法调用
-//存在以下 Mapper 接口方法，你不需要在 xml 处理后两个参数
-public interface CountryMapper {
-    List<Country> selectByPageNumSize(
-            @Param("user") User user,
-            @Param("pageNum") int pageNum,
-            @Param("pageSize") int pageSize);
-}
-//配置supportMethodsArguments=true
-//在代码中直接调用：
-List<Country> list = countryMapper.selectByPageNumSize(user, 1, 10);
+``` java
+    @GetMapping("/getBizListByPage")
+    public Response getBizListByPage(@RequestParam(defaultValue = "1") Integer page,
+                                     @RequestParam(defaultValue = "5") Integer size) {
+
+        PageHelper.startPage(page, size);
+        PageInfo<Biz> pageInfo = new PageInfo<>(bizService.pageBiz());
+        MaraResponse<List<Biz>> response = new MaraResponse<>();
+        response.setData(pageInfo);
+        return response;
+    }
+    //bizService类中pageBiz方法
+    @Override
+    public Page<Biz> pageBiz() {
+        return (Page<Biz>)bizMapper.selectAllTable();
+    }
+```
+
+``` xml
+<select id="selectAllTable" resultType="Biz">
+        SELECT biz_id, send_time, fac_bussiness_status, risk_name, biz_desc, create_time, insurance_id
+        FROM fac_bizkey
+        order by create_time desc
+</select>
 ```
