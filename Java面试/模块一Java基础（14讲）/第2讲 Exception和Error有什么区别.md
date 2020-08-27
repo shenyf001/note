@@ -1,4 +1,4 @@
-# 第2讲 | Exception和Error有什么区别？
+# 第2讲 | Exception和Error有什么区别
 
 世界上存在永远不会出错的程序吗？也许这只会出现在程序员的梦中。随着编程语言和软件的诞生，异常情况就如影随形地纠缠着我们，只有正确处理好意外情况，才能保证程序的可靠性。
 
@@ -28,7 +28,7 @@ Exception 又分为`可检查`（checked）异常和`不检查`（unchecked）�
 
 很多面试官会进一步追问一些细节，比如，你了解哪些 Error、Exception 或者 RuntimeException？我画了一个简单的类图，并列出来典型例子，可以给你作为参考，至少做到基本心里有数。
 
-![](../img/2.1.png)
+![参考图](../img/2.1.png)
 
 其中有些子类型，最好重点理解一下，比如 NoClassDefFoundError 和 ClassNotFoundException 有什么区别，这也是个经典的入门题目。(NoClassDefFoundError 是个Error，是指一个class在编译时存在，在运行时找不到了class文件了；ClassNotFoundException 是个Exception，是使用类似Class.foName()等方法时的checked exception。)
 
@@ -42,7 +42,7 @@ try (BufferedReader br = new BufferedReader(…);
 // do something
 catch ( IOException | XEception e) {// Multiple catch
    // Handle it
-} 
+}
 ```
 
 ## 知识扩展
@@ -94,7 +94,7 @@ try {
 
 ``` java
 public void readPreferences(String fileName){
-   //...perform operations... 
+   //...perform operations...
   InputStream in = new FileInputStream(fileName);
    //...read the preferences file...
 }
@@ -107,7 +107,7 @@ public void readPreferences(String fileName){
 ``` java
 public void readPreferences(String filename) {
   Objects. requireNonNull(filename);
-  //...perform other operations... 
+  //...perform other operations...
   InputStream in = new FileInputStream(filename);
    //...read the preferences file...
 }

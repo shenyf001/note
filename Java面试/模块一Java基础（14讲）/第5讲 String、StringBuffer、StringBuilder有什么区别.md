@@ -1,4 +1,4 @@
-# 第5讲 | String、StringBuffer、StringBuilder有什么区别？
+# 第5讲 | String、StringBuffer、StringBuilder有什么区别
 
 今天我会聊聊日常使用的字符串，别看它似乎很简单，但其实字符串几乎在所有编程语言里都是个特殊的存在，因为不管是数量还是体积，字符串都是大多数应用中的重要组成。
 
@@ -46,7 +46,6 @@ StringBuilder 是 Java 1.5 中新增的，在能力上和 StringBuffer 没有本
 String strByBuilder  = new
 StringBuilder().append("aa").append("bb").append("cc").append
             ("dd").toString();
-             
 String strByConcat = "aa" + "bb" + "cc" + "dd";
 ```
 
@@ -89,7 +88,6 @@ JDK 8 的输出片段是：
 ``` java
          // concat method
          1: invokedynamic #2,  0              // InvokeDynamic #0:makeConcatWithConstants:(Ljava/lang/String;)Ljava/lang/String;
-         
          // ...
          // 实际是利用了MethodHandle,统一了入口
          0: #15 REF_invokeStatic java/lang/invoke/StringConcatFactory.makeConcatWithConstants:(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/invoke/CallSite;
@@ -133,11 +131,11 @@ Intern 是一种显式地排重机制，但是它也有一定的副作用，因�
 
 ``` java
 -XX:+PrintCompilation -XX:+UnlockDiagnosticVMOptions -XX:+PrintInlining
-    //样例输出片段    
+    //样例输出片段
         180    3       3       java.lang.String::charAt (25 bytes)  
-                                  @ 1   java.lang.String::isLatin1 (19 bytes)   
+                                  @ 1   java.lang.String::isLatin1 (19 bytes)
                                   ...  
-                                  @ 7 java.lang.StringUTF16::getChar (60 bytes) intrinsic 
+                                  @ 7 java.lang.StringUTF16::getChar (60 bytes) intrinsic
 ```
 
 可以看出，仅仅是字符串一个实现，就需要 Java 平台工程师和科学家付出如此大且默默无闻的努力，我们得到的很多便利都是来源于此。

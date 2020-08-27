@@ -1,4 +1,4 @@
-## 第3讲 | 谈谈final、finally、 finalize有什么不同？
+# 第3讲 | 谈谈final、finally、 finalize有什么不同
 
 Java 语言有很多看起来很相似，但是用途却完全不同的语言要素，这些内容往往容易成为面试官考察你知识掌握程度的切入点。
 
@@ -49,7 +49,6 @@ try {
 为什么呢？简单说，你无法保证 finalize 什么时候执行，执行的是否符合预期。使用不当会影响性能，导致程序死锁、挂起等。
 
 通常来说，利用上面的提到的 try-with-resources 或者 try-finally 机制，是非常好的回收资源的办法。如果确实需要额外处理，可以考虑 Java 提供的 Cleaner 机制或者其他替代方法。接下来，我来介绍更多设计考虑和实践细节。
-
 
 ## 知识扩展
 
@@ -104,7 +103,7 @@ finalize 还会掩盖资源回收时的出错信息，我们看下面一段 JDK 
        finalizee = null;
     }
   } catch (Throwable x) { }
-    super.clear(); 
+    super.clear();
  }
 ```
 
@@ -155,18 +154,3 @@ public class CleaningExample implements AutoCloseable {
 ## 一课一练
 
 关于今天我们讨论的题目你做到心中有数了吗？也许你已经注意到了，JDK 自身使用的 Cleaner 机制仍然是有缺陷的，你有什么更好的建议吗？
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
